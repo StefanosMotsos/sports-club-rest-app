@@ -2,7 +2,7 @@ package club.sportsapp.core.exceptions;
 
 public class EntityNotFoundException extends AppGenericException {
 
-    private static final String DEFAULT_CODE =  "EntityNotFound";
+    private static final String DEFAULT_CODE =  "NotFound";
 
     public EntityNotFoundException(String code,String message) {
 
