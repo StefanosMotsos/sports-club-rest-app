@@ -52,6 +52,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/v1/auth/authenticate").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/members").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/members/{uuid}/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/*").hasAuthority("VIEW_USER")
                         .anyRequest().authenticated()
                 )

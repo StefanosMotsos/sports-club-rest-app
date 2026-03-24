@@ -47,6 +47,7 @@ public class MemberServiceImpl implements IMemberService{
     private String uploadDir;
 
     @Override
+    @Transactional(rollbackFor = { EntityAlreadyExistsException.class, EntityInvalidArgumentException.class })
     public MemberReadOnlyDTO saveMember(MemberInsertDTO dto)
             throws EntityAlreadyExistsException, EntityInvalidArgumentException {
 
@@ -174,7 +175,7 @@ public class MemberServiceImpl implements IMemberService{
 
     @Override
     public boolean isMemberExists(String vat) {
-        return false;
+        return memberRepository.findByVat(vat).isPresent();
     }
 
     private String getFileExtension(String filename) {
