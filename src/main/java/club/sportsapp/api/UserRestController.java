@@ -9,6 +9,7 @@ import club.sportsapp.dto.UserInsertDTO;
 import club.sportsapp.dto.UserReadOnlyDTO;
 import club.sportsapp.dto.ValidationErrorResponseDTO;
 import club.sportsapp.service.IUserService;
+import club.sportsapp.validator.UserInsertValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,6 +31,7 @@ import java.util.UUID;
 public class UserRestController {
 
     private final IUserService userService;
+    private final UserInsertValidator userInsertValidator;
 
     @Operation(
             summary = "Register a new user",
@@ -72,7 +74,8 @@ public class UserRestController {
     @PostMapping
     public ResponseEntity<UserReadOnlyDTO> registerUser(@RequestBody UserInsertDTO userInsertDTO, BindingResult bindingResult)
             throws ValidationException, EntityAlreadyExistsException, EntityInvalidArgumentException {
-        //user validator
+
+        userInsertValidator.validate(userInsertDTO.username(), bindingResult);
 
         if (bindingResult.hasErrors()) throw new ValidationException("User", "User invalid data", bindingResult);
 
