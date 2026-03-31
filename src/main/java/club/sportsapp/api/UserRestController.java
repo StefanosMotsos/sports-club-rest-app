@@ -4,9 +4,17 @@ import club.sportsapp.core.exceptions.EntityAlreadyExistsException;
 import club.sportsapp.core.exceptions.EntityInvalidArgumentException;
 import club.sportsapp.core.exceptions.EntityNotFoundException;
 import club.sportsapp.core.exceptions.ValidationException;
+import club.sportsapp.dto.ErrorResponseDTO;
 import club.sportsapp.dto.UserInsertDTO;
 import club.sportsapp.dto.UserReadOnlyDTO;
+import club.sportsapp.dto.ValidationErrorResponseDTO;
 import club.sportsapp.service.IUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -23,6 +31,44 @@ public class UserRestController {
 
     private final IUserService userService;
 
+    @Operation(
+            summary = "Register a new user",
+            description = "Creates a new user account in the system."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "User created successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserReadOnlyDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation error",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ValidationErrorResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "User already exists",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDTO.class)
+                    )
+            )
+    })
     @PostMapping
     public ResponseEntity<UserReadOnlyDTO> registerUser(@RequestBody UserInsertDTO userInsertDTO, BindingResult bindingResult)
             throws ValidationException, EntityAlreadyExistsException, EntityInvalidArgumentException {
@@ -43,10 +89,33 @@ public class UserRestController {
                 .body(userReadOnlyDTO);
     }
 
+    @Operation(
+            summary = "Get user by UUID",
+            description = "Retrieves a non-deleted user by their UUID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserReadOnlyDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDTO.class)
+                    )
+            )
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{uuid}")
     public ResponseEntity<UserReadOnlyDTO> getUserByUUID(@PathVariable UUID uuid)
             throws EntityNotFoundException {
 
-        return ResponseEntity.ok(userService.getUserByUuid(uuid));
+        return ResponseEntity.ok(userService.getUserByUuidDeletedFalse(uuid));
     }
 }

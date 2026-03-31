@@ -10,7 +10,7 @@ public class MemberSpecification {
         return Specification.allOf(
                 hasLastname(filters.getLastname()),
                 hasSport(filters.getSport()),
-                isDeleted(filters.getSport())
+                isDeleted(filters.isDeleted())
         );
     }
 
@@ -20,10 +20,11 @@ public class MemberSpecification {
     }
 
     private static Specification<Member> hasSport(String sport) {
-        return (root, query, cb) -> cb.like(cb.lower(root.get("sport")), sport.toLowerCase() + "%");
+        return (root, query, cb) -> sport == null ? cb.conjunction() :
+                cb.like(cb.lower(root.get("sport")), sport.toLowerCase() + "%");
     }
 
-    private static Specification<Member> isDeleted(String deleted) {
+    private static Specification<Member> isDeleted(boolean deleted) {
         return (root, query, cb) -> cb.equal(root.get("deleted"), deleted);
     }
 }
