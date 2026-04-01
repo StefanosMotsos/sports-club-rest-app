@@ -33,7 +33,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>,
         s.name AS athlima,
         m.firstname AS onoma,
         m.lastname AS eponymo,
-        pi.membershipId AS membership,
+        pi.membership_Id AS membership,
         m.vat AS afm,
             CASE WHEN m.deleted = 1 THEN 'ΔΙΕΓΡΑΜΜΕΝΟΣ' ELSE 'ΕΝΕΡΓΟΣ' END AS katastasi,
             CASE
