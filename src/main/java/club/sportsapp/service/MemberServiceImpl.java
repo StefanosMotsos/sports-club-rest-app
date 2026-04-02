@@ -232,6 +232,7 @@ public class MemberServiceImpl implements IMemberService{
             member.softDelete();
             member.getPersonalInfo().softDelete();
             member.getUser().softDelete();
+            member.setActivity(MemberActivity.INACTIVE);
 
             log.info("Member with uuid={} was deleted successfully", uuid);
             return (mapper.mapToMemberReadOnlyDTO(member));

@@ -1,6 +1,6 @@
 package club.sportsapp.dto;
 
 public record MemberReadOnlyDTO(String uuid, String firstname,
-                                String lastname, String vat, String sport, String identityNumber,
+                                String lastname, String vat, String sport, String activity, String identityNumber,
                                 String membershipId, String username) {
 }

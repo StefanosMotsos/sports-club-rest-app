@@ -2,6 +2,7 @@ package club.sportsapp.specification;
 
 import club.sportsapp.core.filters.MemberFilters;
 import club.sportsapp.model.Member;
+import club.sportsapp.model.MemberActivity;
 import org.springframework.data.jpa.domain.Specification;
 
 public class MemberSpecification {
@@ -10,7 +11,8 @@ public class MemberSpecification {
         return Specification.allOf(
                 hasLastname(filters.getLastname()),
                 hasSport(filters.getSport()),
-                isDeleted(filters.isDeleted())
+                isDeleted(filters.isDeleted()),
+                hasActivity(filters.getActivity())
         );
     }
 
@@ -26,5 +28,9 @@ public class MemberSpecification {
 
     private static Specification<Member> isDeleted(boolean deleted) {
         return (root, query, cb) -> cb.equal(root.get("deleted"), deleted);
+    }
+
+    private static Specification<Member> hasActivity(MemberActivity activity) {
+        return (root, query, cb) -> activity == null ? cb.conjunction() : cb.equal(root.get("activity"), activity);
     }
 }

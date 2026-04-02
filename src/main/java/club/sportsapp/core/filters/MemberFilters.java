@@ -1,5 +1,6 @@
 package club.sportsapp.core.filters;
 
+import club.sportsapp.model.MemberActivity;
 import lombok.*;
 
 @Getter
@@ -15,4 +16,5 @@ public class MemberFilters {
     private String lastname;
     private boolean deleted;
     private String sport;
+    private MemberActivity activity;
 }

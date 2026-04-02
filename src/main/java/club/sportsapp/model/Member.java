@@ -38,6 +38,10 @@ public class Member extends AbstractEntity {
     @JoinColumn(name = "sport_id")
     private Sport sport;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MemberActivity activity;
+
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
@@ -47,8 +51,9 @@ public class Member extends AbstractEntity {
     private PersonalInfo personalInfo;
 
     @PrePersist
-    public void initializeUUID() {
+    public void initializeUUIDAndActivity() {
         this.uuid = UUID.randomUUID();
+        this.activity = MemberActivity.ACTIVE;
     }
 
     public void addUser(User user) {
