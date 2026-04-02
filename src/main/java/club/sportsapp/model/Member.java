@@ -1,5 +1,6 @@
 package club.sportsapp.model;
 
+import club.sportsapp.model.static_data.MembershipType;
 import club.sportsapp.model.static_data.Sport;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,6 +42,10 @@ public class Member extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MemberActivity activity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "membership_type_id")
+    private MembershipType membershipType;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", nullable = false, unique = true)

@@ -10,6 +10,7 @@ import club.sportsapp.dto.MemberReadOnlyDTO;
 import club.sportsapp.dto.MemberUpdateDTO;
 import club.sportsapp.mapper.Mapper;
 import club.sportsapp.model.*;
+import club.sportsapp.model.static_data.MembershipType;
 import club.sportsapp.model.static_data.Sport;
 import club.sportsapp.repository.*;
 import club.sportsapp.specification.MemberSpecification;
@@ -20,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,6 +47,7 @@ public class MemberServiceImpl implements IMemberService{
     private final PersonalInfoRepository personalInfoRepository;
     private final UserRepository userRepository;
     private final SportRepository sportRepository;
+    private final MembershipTypeRepository typeRepository;
     private final RoleRepository roleRepository;
     private final Mapper mapper;
     private final PasswordEncoder passwordEncoder;
@@ -77,10 +78,14 @@ public class MemberServiceImpl implements IMemberService{
             Sport sport = sportRepository.findById(dto.sportId())
                     .orElseThrow(() -> new EntityInvalidArgumentException("Sport", "Sport id= " + dto.sportId() + " invalid"));
 
+            MembershipType type = typeRepository.findById(dto.membershipTypeId())
+                    .orElseThrow(() -> new EntityInvalidArgumentException("MembershipType", "Type id= " + dto.membershipTypeId() + " invalid"));
+
             Role role = roleRepository.findById(dto.userInsertDTO().roleId())
                     .orElseThrow(() -> new EntityInvalidArgumentException("Role", "Role id= " + dto.userInsertDTO().roleId() + " invalid"));
 
             sport.addMember(member);
+            type.addMember(member);
 
             User user = member.getUser();
             role.addUser(user);
@@ -179,6 +184,16 @@ public class MemberServiceImpl implements IMemberService{
                     oldSport.removeMember(member);
                 }
                 sport.addMember(member);
+            }
+
+            if (!Objects.equals(member.getMembershipType().getId(), dto.membershipTypeId())) {
+                MembershipType type = typeRepository.findById(dto.membershipTypeId())
+                        .orElseThrow(() -> new EntityInvalidArgumentException("MembershipType", "Type id= " + dto.membershipTypeId() + " invalid"));
+                MembershipType oldType = member.getMembershipType();
+                if (oldType != null) {
+                    oldType.removeMember(member);
+                }
+                type.addMember(member);
             }
 
             if (!member.getUser().getUsername().equals(dto.userUpdateDTO().username())) {

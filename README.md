@@ -152,6 +152,8 @@ Migrations include:
 * Initial schema (roles/capabilities/users/sports/attachments/personal_information/members)
 * Seed data for sports and roles/capabilities
 * Inserts for the `VIEW_USER` capability and assignment to `ADMIN`
+* Adds member activity status (`ACTIVE`/`SUSPENDED`/`INACTIVE`)
+* Adds membership types (`BASIC`/`EXTRA`/`PREMIUM`) and `members.membership_type_id` foreign key
 
 ## Tests
 * Test framework: JUnit 5

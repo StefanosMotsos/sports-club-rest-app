@@ -26,6 +26,9 @@ public record MemberUpdateDTO(
         @NotNull
         Long sportId,
 
+        @NotNull
+        Long membershipTypeId,
+
         @Valid
         @NotNull
         UserUpdateDTO userUpdateDTO,

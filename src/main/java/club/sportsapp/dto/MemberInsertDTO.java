@@ -22,6 +22,9 @@ public record MemberInsertDTO(
         @NotNull
         Long sportId,
 
+        @NotNull
+        Long membershipTypeId,
+
         @Valid
         @NotNull
         UserInsertDTO userInsertDTO,
